@@ -7,20 +7,19 @@ from subprocess import call
 class MysqlJob(Job):
     
     def __init__(self, conf):
+        Job.__init__(self,conf) 
         self.name = 'MySql'
         self.packages = ['mysql-server','mysql-client']
         self.required_conf = ['mysql_username','mysql_database_name','mysql_password'] 
-  
-        for attr in self.required_conf:
-            try:
-                setattr(self,attr,getattr(conf,attr))
-            except AttributeError:
-                print bcolors.FAIL + self.name + ' requires you to specify [' + attr + '] attribute.' + bcolors.ENDC 
-                sys.exit()                     
-    
+        
+        Job.checkRequiredConf(self,conf) 
+         
     def dependencies(self):
         return []
     
+    def executeQuery(self, query):
+        return call("mysql -uroot -p" + self.mysql_password + " -e \"" + query + "\"" ,shell=True)
+
     def install(self):
         print 'Installing ' + self.name + '...'
         
@@ -35,18 +34,28 @@ class MysqlJob(Job):
             for package in self.packages:
                 if ( not is_package_installed(package, True) ):
                     install_package(package)
+        
+        """ Create user and tables specified on the config file  """
+        result = self.executeQuery("CREATE DATABASE " + self.mysql_database_name + ";")
+        result = self.executeQuery("CREATE USER '" + self.mysql_username + "'@'localhost' IDENTIFIED BY '" + self.mysql_password + "';")         
+        result = self.executeQuery("GRANT ALL PRIVILEGES ON " + self.mysql_database_name + " . * TO '" + self.mysql_username + "'@'localhost';")
+        result = self.executeQuery("FLUSH PRIVILEGES;")
 
- 
         return True
     
     def uninstall(self):
         print 'Uninstalling ' + self.name + '...'
+        
+        result = self.executeQuery("DROP USER '" + self.mysql_username + "'@'localhost';")
+        result = self.executeQuery("DROP DATABASE " + self.mysql_database_name + ";")
 
         if ( self.packages ):
             print 'Packages required by ' + self.name + ': ' + string.join(self.packages, ",")
             for package in self.packages:
                 if ( is_package_installed(package)):
                     uninstall_package(package)
+        
+        result = call("apt-get -y autoremove", shell=True)
 
         return True
     

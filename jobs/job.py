@@ -1,6 +1,20 @@
 class Job:
     
     packages = []
+    
+    def checkRequiredConf(self, conf):
+        for attr in self.required_conf:
+            try:
+                setattr(self,attr,getattr(conf,attr))
+            except AttributeError:
+                print bcolors.FAIL + self.name + ' requires you to specify [' + attr + '] attribute.' + bcolors.ENDC
+                sys.exit()
+
+    def __init__(self, conf):
+        self.name = 'Basic'
+        self.required_conf = ['server_user','server_password']
+
+        self.checkRequiredConf(conf) 
 
     """A simple job class"""
     def dependencies(self):

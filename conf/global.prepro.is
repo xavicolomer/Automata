@@ -1,8 +1,17 @@
 #BASIC SETTINGS
+server_user = 'root'
+server_password = '[roadToHappiness00]'
+
 domain_name = 'global.prepro.is'
 base_dir = '/home/sites/public_html'
 app_name = 'global'
+
 mode = 'preproduction'
+
+#JOBS
+#jobs = ['jobs.mysql.MysqlJob']
+jobs = ['jobs.init_folders.InitFolders']
+
 
 #DATABASE SETTINGS
 mysql_database_name = 'global'
@@ -11,8 +20,6 @@ mysql_password = '[m4st3r0fD4t4b4s3!]'
 
 #PACKAGES
 django_url = 'http://media.djangoproject.com/releases/1.3/Django-1.3.1.tar.gz'
-
-packages = type('obj', (object,),{ 'preproduction':['openssh-server'], 'normal':['mysql-server','mysql-client','python-mysqldb','nginx'], 'production':[] })
 
 #GIT
 use_git = True

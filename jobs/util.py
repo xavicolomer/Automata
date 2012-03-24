@@ -53,7 +53,7 @@ def uninstall_package(package):
     cache = apt.Cache()
     cache.update()
     pkg = cache[package]
-    pkg.mark_delete()
+    pkg.mark_delete(True, True)
     cache.commit()
 
 def install_package(package):

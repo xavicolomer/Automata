@@ -1,5 +1,5 @@
 import sys
-from jobs.mysql import MysqlJob 
+#from jobs.mysql import MysqlJob 
 import getopt
 from jobs.util import bcolors
 
@@ -7,6 +7,11 @@ def usage():
     print 'Deploy Help'
     print ''
     print '-s, --source  Use  source to define a source file'
+
+def importJob(module,klass):
+    mod = __import__(module, fromlist=[klass])
+    klass = getattr(mod, klass)
+    return klass
 
 def getVarFromFile(filename):
     import imp
@@ -45,8 +50,13 @@ def checkOpt(argv):
 def uninstall():
     getVarFromFile(source)
 
-    job = MysqlJob(settings)
-    job.uninstall()
+    for job in settings.jobs:
+        x = job.rfind(".")
+        klass = job[x+1:]
+        module = job[:-len(job)+x]
+        print klass,module
+        job = importJob(module,klass)(settings)
+        job.uninstall()
 
 def status():
     return False
@@ -57,9 +67,14 @@ def install():
     print ''
     print 'Setting mode: ' + bcolors.WARNING + settings.mode.upper() + bcolors.ENDC
     print ''
-
-    job = MysqlJob(settings)
-    job.install()
+    
+    for job in settings.jobs:
+	x = job.rfind(".")
+        klass = job[x+1:]
+        module = job[:-len(job)+x]
+        print klass,module          
+        job = importJob(module,klass)(settings)
+        job.install()
 
 def main(argv):
     print 'Running JobManager'
