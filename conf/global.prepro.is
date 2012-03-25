@@ -10,7 +10,7 @@ mode = 'preproduction'
 
 #JOBS
 #jobs = ['jobs.mysql.MysqlJob']
-jobs = ['jobs.init_folders.InitFolders']
+jobs = ['jobs.django.DjangoJob']
 
 
 #DATABASE SETTINGS

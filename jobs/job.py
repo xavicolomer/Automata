@@ -1,3 +1,6 @@
+import string
+from util import is_package_installed, install_package, bcolors
+
 class Job:
     
     packages = []
@@ -15,6 +18,14 @@ class Job:
         self.required_conf = ['server_user','server_password']
 
         self.checkRequiredConf(conf) 
+    
+    def install_packages(self):
+        """ Package installation """
+        if ( self.packages ):
+            print 'Packages required by ' + self.name + ': ' + string.join(self.packages, ",")
+            for package in self.packages:
+                if ( not is_package_installed(package, True) ):
+                    install_package(package)    
 
     """A simple job class"""
     def dependencies(self):

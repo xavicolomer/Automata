@@ -4,6 +4,7 @@ import string
 import sys
 from subprocess import call
 import os
+import shutil
 
 class InitFolders(Job):
     
@@ -26,7 +27,6 @@ class InitFolders(Job):
          
         folders = temp.split('/')
         for folder in folders:
-            print path + folder
             path = path + folder + "/"
             if not os.path.exists(path):
                 os.makedirs(path)
@@ -36,20 +36,17 @@ class InitFolders(Job):
         for folder in special_folders:
             tmp = path + folder
             if not os.path.exists(tmp):
+                print 'Creating folder: ' + folder
                 os.makedirs(tmp)
 
         return True
     
     def uninstall(self):
-        folder = self.base_dir + '/' + self.domain_name
-        for the_file in os.listdir(folder):
-            file_path = os.path.join(folder, the_file)
-            try:
-                if os.path.isfile(file_path):
-                    os.unlink(file_path)
-            except Exception, e:
-                print e
-        
+        try:
+            shutil.rmtree(self.base_dir + '/' + self.domain_name)
+        except OSError:
+            """ Directory was already deleted """
+            return False
         return True
     
     def is_installed(self):

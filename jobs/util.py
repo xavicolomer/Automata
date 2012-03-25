@@ -21,6 +21,10 @@ class bcolors:
         self.FAIL = ''
         self.ENDC = ''
 
+def url_file(url):
+    slugs = url.split('/')
+    return slugs[len(slugs)-1]
+
 
 def is_package_installed(package, verbose = False):
     cache = apt.Cache()

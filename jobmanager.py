@@ -54,7 +54,6 @@ def uninstall():
         x = job.rfind(".")
         klass = job[x+1:]
         module = job[:-len(job)+x]
-        print klass,module
         job = importJob(module,klass)(settings)
         job.uninstall()
 
