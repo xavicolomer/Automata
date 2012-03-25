@@ -5,12 +5,14 @@ server_password = '[roadToHappiness00]'
 domain_name = 'global.prepro.is'
 base_dir = '/home/sites/public_html'
 app_name = 'global'
-
+modules = ['website']
 mode = 'preproduction'
 
 #JOBS
 #jobs = ['jobs.mysql.MysqlJob']
-jobs = ['jobs.django.DjangoJob']
+#jobs = ['jobs.django.DjangoInstallJob']
+jobs = ['jobs.django.DjangoCreateAppJob']
+#jobs = ['jobs.nginx.NginxJob']
 
 
 #DATABASE SETTINGS
@@ -18,8 +20,13 @@ mysql_database_name = 'global'
 mysql_username = 'django'
 mysql_password = '[m4st3r0fD4t4b4s3!]'
 
+#NGINX
+nginx_template_url = 'jobs/templates/nginx.txt'
+
+
 #PACKAGES
 django_url = 'http://media.djangoproject.com/releases/1.3/Django-1.3.1.tar.gz'
+django_reload_template_url = 'jobs/templates/django-reload.txt'
 
 #GIT
 use_git = True

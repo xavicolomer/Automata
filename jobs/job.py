@@ -1,12 +1,17 @@
 import string
 from util import is_package_installed, install_package, bcolors
+import sys
+
 
 class Job:
     
     packages = []
     
+    def addRequiredFields(self,fields):
+        self.settings = fields
+ 
     def checkRequiredConf(self, conf):
-        for attr in self.required_conf:
+        for attr in self.settings:
             try:
                 setattr(self,attr,getattr(conf,attr))
             except AttributeError:
@@ -14,8 +19,10 @@ class Job:
                 sys.exit()
 
     def __init__(self, conf):
+        print 'init'
         self.name = 'Basic'
-        self.required_conf = ['server_user','server_password']
+        self.settings = []
+        self.addRequiredFields( ['server_user','server_password'])
 
         self.checkRequiredConf(conf) 
     

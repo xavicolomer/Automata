@@ -28,13 +28,8 @@ class MysqlJob(Job):
         result = call("echo mysql-server mysql-server/root_password select " + self.mysql_password +  " | debconf-set-selections",shell=True)
         result = call("echo mysql-server mysql-server/root_password_again select " + self.mysql_password + " | debconf-set-selections", shell=True)
         
-        """ Package installation """
-	if ( self.packages ):
-            print 'Packages required by ' + self.name + ': ' + string.join(self.packages, ",")
-            for package in self.packages:
-                if ( not is_package_installed(package, True) ):
-                    install_package(package)
-        
+        Job.install_packages(self)
+ 
         """ Create user and tables specified on the config file  """
         result = self.executeQuery("CREATE DATABASE " + self.mysql_database_name + ";")
         result = self.executeQuery("CREATE USER '" + self.mysql_username + "'@'localhost' IDENTIFIED BY '" + self.mysql_password + "';")         

@@ -1,16 +1,77 @@
 from job import Job
-from util import bcolors, url_file
+from util import bcolors, url_file, replace, run
 import string
 import sys
 from subprocess import call
 import os
 import shutil
+from tempfile import mkstemp
+import subprocess
+import re
 
-class DjangoJob(Job):
+class DjangoCreateAppJob(Job):
+    def __init__(self, conf):
+        Job.__init__(self,conf)
+        self.name = 'Django Create App'
+        self.addRequiredFields(['django_reload_template_url','base_dir','app_name','domain_name','modules','mysql_username', 'mysql_password' ])
+        self.checkRequiredConf(conf)
+    
+    def install(self):
+        print 'Installing ' + self.name + '...'
+        
+        p = subprocess.Popen("pwd", stdout=subprocess.PIPE)
+        current_folder = p.communicate()[0].rstrip()
+
+        """ Create app and modules """
+        os.chdir( self.base_dir + '/' + self.domain_name + "/private/")
+        result = call("django-admin.py startproject " + self.app_name,shell=True)
+        os.chdir( self.app_name)
+         
+        for app in self.modules:
+            result = call("python manage.py startapp " + app, shell=True)
+        
+        """ Configure settings.py according to source file """
+        patterns = [ { "expr":"\'NAME\'(.*?),", "subst":"'NAME':'" + self.app_name + "'," },
+                     { "expr":"\'ENGINE\'(.*?),", "subst":"'ENGINE':'django.db.backends.mysql'," },
+                     { "expr":"\'USER\'(.*?),", "subst":"'USER':'" + self.mysql_username + "'," },
+                     { "expr":"\'PASSWORD\'(.*?),", "subst":"'PASSWORD':'" + self.mysql_password + "'," }
+                   ]					
+
+        for pattern in patterns:
+            replace(self.base_dir + '/' + self.domain_name + "/private/"+self.app_name+"/settings.py", pattern["expr"], pattern["subst"])
+        
+        """ Install reload script """
+        os.chdir(current_folder)
+
+        f = open(self.django_reload_template_url, 'r')
+        template = f.read()
+        
+        template = re.sub('{{base_dir}}',self.base_dir, template)
+        template = re.sub('{{domain_name}}', self.domain_name, template)
+        template = re.sub('{{app_name}}', self.app_name, template)
+        
+        f = open( '/usr/local/bin/' + self.app_name + "-reload", 'w')
+        f.write(template)
+        f.close()
+
+	result = call("chmod +rx /usr/local/bin/" + self.app_name + "-reload",shell=True)
+         
+ 
+        return True
+
+    def uninstall(self):
+        shutil.rmtree( self.base_dir + '/' + self.domain_name + "/private/" + self.app_name )
+        return True
+
+    def status(self):
+        return True
+
+
+class DjangoInstallJob(Job):
     
     def __init__(self, conf):
         Job.__init__(self,conf) 
-        self.name = 'Django'
+        self.name = 'Django Install'
         self.required_conf = ['django_url'] 
 	self.packages = ['python-mysqldb']
 
