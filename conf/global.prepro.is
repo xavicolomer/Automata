@@ -9,10 +9,7 @@ modules = ['website']
 mode = 'preproduction'
 
 #JOBS
-#jobs = ['jobs.mysql.MysqlJob']
-#jobs = ['jobs.django.DjangoInstallJob']
-jobs = ['jobs.django.DjangoCreateAppJob']
-#jobs = ['jobs.nginx.NginxJob']
+tasks = ['tasks.mysql.Mysql','tasks.init_folders.InitFolders','tasks.nginx.Nginx','tasks.django.DjangoInstall','tasks.django.DjangoCreateApp']
 
 
 #DATABASE SETTINGS
@@ -21,12 +18,13 @@ mysql_username = 'django'
 mysql_password = '[m4st3r0fD4t4b4s3!]'
 
 #NGINX
-nginx_template_url = 'jobs/templates/nginx.txt'
+nginx_template_url = 'tasks/templates/nginx.txt'
 
 
 #PACKAGES
 django_url = 'http://media.djangoproject.com/releases/1.3/Django-1.3.1.tar.gz'
-django_reload_template_url = 'jobs/templates/django-reload.txt'
+django_reload_template_url = 'tasks/templates/django-reload.txt'
+django_settings_template = 'tasks/templates/django-settings.txt'
 
 #GIT
 use_git = True
