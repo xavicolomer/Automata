@@ -1,0 +1,39 @@
+#this is a sample configuration file for a coolDomain.is
+
+
+#BASIC SETTINGS
+server_user = 'root'
+server_password = 'aStrongPassword'
+
+domain_name = 'coolDomain.is'
+base_dir = '/home/sites/public_html'
+app_name = 'djangoApp'
+#modules can also be referred as subapps
+modules = ['test']
+mode = 'preproduction'
+
+#JOBS
+tasks = ['tasks.mysql.Mysql','tasks.init_folders.InitFolders','tasks.nginx.Nginx','tasks.django.DjangoInstall','tasks.django.DjangoCreateApp']
+
+
+#DATABASE SETTINGS
+mysql_database_name = 'aDBName'
+mysql_username = 'django'
+mysql_password = '[masterOfTheDatabase!]'
+
+#NGINX
+nginx_template_url = 'tasks/templates/nginx.txt'
+
+
+#PACKAGES
+django_url = 'http://media.djangoproject.com/releases/1.3/Django-1.3.1.tar.gz'
+django_reload_template_url = 'tasks/templates/django-reload.txt'
+django_settings_template = 'tasks/templates/django-settings.txt'
+
+#GIT
+use_git = True
+git_repo = ''
+
+
+
+	
