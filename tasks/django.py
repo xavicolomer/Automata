@@ -67,10 +67,10 @@ class DjangoInstall(Task):
     def __init__(self, conf):
         Task.__init__(self,conf) 
         self.name = 'Django Install'
-        self.required_conf = ['django_url,base_dir,domain_name'] 
-	self.packages = ['python-mysqldb']
+        self.addRequiredFields(['django_url','base_dir','domain_name']) 
+	self.packages = ['cron','python-mysqldb']
 
-        Task.checkRequiredConf(self,conf)
+        self.checkRequiredConf(conf)
           
     def dependencies(self):
         return []
@@ -89,7 +89,7 @@ class DjangoInstall(Task):
         temp_folder = '/home/installers/'
  
         if ( not django_installed ):
-            Job.install_packages(self)     
+            Task.install_packages(self)     
    
             self.dir_already_created = True
             if not os.path.exists(temp_folder):
