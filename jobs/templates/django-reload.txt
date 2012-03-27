@@ -1,9 +1,0 @@
-#!/bin/bash
-PROJDIR="{{base_dir}}/{{domain_name}}/private/{{app_name}}"
-PIDFILE="$PROJDIR/{{app_name}}.pid"
-cd $PROJDIR
-if [ -f $PIDFILE ]; then
-   kill `cat -- $PIDFILE`
-   rm -f -- $PIDFILE
-fi
-exec python ./manage.py runfcgi host=127.0.0.1 port=8081 pidfile=$PIDFILE --settings=settings
